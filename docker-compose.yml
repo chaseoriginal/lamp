@@ -1,0 +1,40 @@
+services:
+  db1:
+    image: mysql:latest
+    restart: always
+    environment:
+    - MYSQL_DATABASE=${MYSQL_DATABASE}
+    - MYSQL_USER=${MYSQL_USER}
+    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes: []
+    ports:
+    - ${IP}:${DBPORT}:${DBPORT}
+    networks:
+    - lamp
+  web1:
+    depends_on:
+    - db1
+    image: php:8.1.1-apache
+    restart: always
+    volumes: []
+    ports:
+    - ${IP}:${SWEBPORT}:${SWEBPORT}
+    networks:
+    - lamp
+  phpmyadmin1:
+    depends_on:
+    - db1
+    image: phpmyadmin/phpmyadmin
+    restart: always
+    ports:
+    - ${IP}:${PHPMAEXTPORT}:${PHPMAINTPORT}
+    environment:
+    - PMA_HOST=db1
+    - PMA_PORT=3306
+    networks:
+    - lamp
+networks:
+  lamp:
+    driver: bridge
+volumes: {}
