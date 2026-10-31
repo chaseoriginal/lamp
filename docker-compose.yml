@@ -3,38 +3,44 @@ services:
     image: mysql:latest
     restart: always
     environment:
-    - MYSQL_DATABASE=${MYSQL_DATABASE}
-    - MYSQL_USER=${MYSQL_USER}
-    - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-    - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-    volumes: []
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - ${VOLUME_DB}:/docker-entrypoint-initdb.d
+      - lamp_mysql_datadir:/var/lib/mysql
     ports:
-    - ${IP}:${DBPORT}:${DBPORT}
+      - ${IP}:${DBPORT}:${DBPORT}
     networks:
-    - lamp
+      - lamp
   web1:
     depends_on:
-    - db1
+      - db1
     image: php:8.1.1-apache
     restart: always
-    volumes: []
+    volumes:
+      - ${VOLUME_WEB}:/var/www/html
     ports:
-    - ${IP}:${SWEBPORT}:${SWEBPORT}
+      - ${IP}:${SWEBPORT}:${SWEBPORT}
     networks:
-    - lamp
+      - lamp
   phpmyadmin1:
     depends_on:
-    - db1
+      - db1
     image: phpmyadmin/phpmyadmin
     restart: always
     ports:
-    - ${IP}:${PHPMAEXTPORT}:${PHPMAINTPORT}
+      - ${IP}:${PHPMAEXTPORT}:${PHPMAINTPORT}
     environment:
-    - PMA_HOST=db1
-    - PMA_PORT=3306
+      - PMA_HOST=${PMA_HOST}
+      - PMA_PORT=${PMA_PORT}
     networks:
-    - lamp
+      - lamp
 networks:
   lamp:
     driver: bridge
-volumes: {}
+volumes:
+  lamp_mysql_datadir:
+    external: true
+    name: cec35905f9f248776a850cdc0609f1e3e4cab3c1b6c63567f17c54748afe3874
