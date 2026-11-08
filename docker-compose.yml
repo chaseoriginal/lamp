@@ -28,7 +28,7 @@ services:
   phpmyadmin1:
     depends_on:
       - db1
-    image: phpmyadmin/phpmyadmin
+    image: phpmyadmin/phpmyadmin:5.2.3
     restart: always
     ports:
       - ${IP}:${PHPMAEXTPORT}:${PHPMAINTPORT}
