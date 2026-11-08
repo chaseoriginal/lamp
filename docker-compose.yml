@@ -1,6 +1,6 @@
 services:
   db1:
-    image: mysql:latest
+    image: mysql:26.10.0-oraclelinux9
     restart: always
     environment:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
